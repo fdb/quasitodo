@@ -8,13 +8,32 @@ const items = [
 ];
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { items, text: '' };
+  }
+
+  onChangeText(text) {
+    this.setState({ text });
+  }
+
+  onAddItem() {
+    const newItem = { key: Date.now(), text: this.state.text, complete: false };
+    const newItems = [...this.state.items, newItem];
+    this.setState({ items: newItems, text: '' });
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Header />
+        <Header
+          text={this.state.text}
+          onChangeText={this.onChangeText.bind(this)}
+          onAddItem={this.onAddItem.bind(this)}
+        />
         <FlatList
           style={styles.itemList}
-          data={items}
+          data={this.state.items}
           renderItem={this.renderItem}
         />
       </View>

@@ -9,6 +9,9 @@ export default class Header extends React.Component {
           style={styles.input}
           placeholder="Add To-do"
           returnKeyType="done"
+          value={this.props.text}
+          onChangeText={this.props.onChangeText}
+          onSubmitEditing={this.props.onAddItem}
         />
       </View>
     );
