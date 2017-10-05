@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import Header from './Header';
+import Footer from './Footer';
 import TodoItem from './TodoItem';
 
 const items = [
@@ -11,7 +12,7 @@ const items = [
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { items, text: '' };
+    this.state = { items, text: '', filter: 'all' };
   }
 
   onChangeText(text) {
@@ -32,7 +33,22 @@ export default class App extends React.Component {
     this.setState({ items: newItems });
   }
 
+  onFilter(filter) {
+    this.setState({ filter });
+  }
+
   render() {
+    const items = this.state.items.filter(item => {
+      if (this.state.filter === 'all') {
+        return true;
+      } else if (this.state.filter === 'active' && !item.complete) {
+        return true;
+      } else if (this.state.filter === 'completed' && item.complete) {
+        return true;
+      } else {
+        return false;
+      }
+    });
     return (
       <View style={styles.container}>
         <Header
@@ -42,8 +58,12 @@ export default class App extends React.Component {
         />
         <FlatList
           style={styles.itemList}
-          data={this.state.items}
+          data={items}
           renderItem={this.renderItem.bind(this)}
+        />
+        <Footer
+          filter={this.state.filter}
+          onFilter={this.onFilter.bind(this)}
         />
       </View>
     );
