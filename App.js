@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
+import Header from './Header';
 
 const items = [
   { key: 1507129580608, text: 'Buy bread', complete: false },
@@ -10,6 +11,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Header />
         <FlatList
           style={styles.itemList}
           data={items}
@@ -33,8 +35,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 30
+    justifyContent: 'center'
   },
   itemList: {
     width: '100%'
