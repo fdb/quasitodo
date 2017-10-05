@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import Header from './Header';
+import TodoItem from './TodoItem';
 
 const items = [
   { key: 1507129580608, text: 'Buy bread', complete: false },
@@ -23,6 +24,14 @@ export default class App extends React.Component {
     this.setState({ items: newItems, text: '' });
   }
 
+  onToggleItem(key, complete) {
+    const newItems = this.state.items.map(item => {
+      if (item.key !== key) return item;
+      return { ...item, complete };
+    });
+    this.setState({ items: newItems });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -34,7 +43,7 @@ export default class App extends React.Component {
         <FlatList
           style={styles.itemList}
           data={this.state.items}
-          renderItem={this.renderItem}
+          renderItem={this.renderItem.bind(this)}
         />
       </View>
     );
@@ -42,9 +51,10 @@ export default class App extends React.Component {
 
   renderItem(item) {
     return (
-      <View style={styles.item}>
-        <Text style={styles.itemText}>{item.item.text}</Text>
-      </View>
+      <TodoItem
+        item={item.item}
+        onToggleItem={this.onToggleItem.bind(this, item.item.key)}
+      />
     );
   }
 }
@@ -58,17 +68,5 @@ const styles = StyleSheet.create({
   },
   itemList: {
     width: '100%'
-  },
-  item: {
-    flex: 1,
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    padding: 10,
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1
-  },
-  itemText: {
-    fontSize: 24,
-    color: '#444'
   }
 });
