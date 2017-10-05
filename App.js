@@ -37,6 +37,11 @@ export default class App extends React.Component {
     this.setState({ filter });
   }
 
+  onClearCompleted() {
+    const newItems = this.state.items.filter(item => !item.complete);
+    this.setState({ items: newItems });
+  }
+
   render() {
     const items = this.state.items.filter(item => {
       if (this.state.filter === 'all') {
@@ -64,6 +69,7 @@ export default class App extends React.Component {
         <Footer
           filter={this.state.filter}
           onFilter={this.onFilter.bind(this)}
+          onClearCompleted={this.onClearCompleted.bind(this)}
         />
       </View>
     );

@@ -33,6 +33,9 @@ export default class Footer extends React.Component {
             <Text>Completed</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={this.props.onClearCompleted}>
+          <Text>Clear Completed</Text>
+        </TouchableOpacity>
       </View>
     );
   }
