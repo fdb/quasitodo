@@ -12,6 +12,7 @@ export default class Header extends React.Component {
           value={this.props.text}
           onChangeText={this.props.onChangeText}
           onSubmitEditing={this.props.onAddItem}
+          underlineColorAndroid="transparent"
         />
       </View>
     );
