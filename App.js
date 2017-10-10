@@ -6,7 +6,11 @@ import TodoItem from './TodoItem';
 
 const INITIAL_ITEMS = [
   { key: 1507129580608, text: 'Welcome to Quasitodo!', complete: false },
-  { key: 1507129597587, text: 'Add new to-do items at the top.', complete: false }
+  {
+    key: 1507129597587,
+    text: 'Add new to-do items at the top.',
+    complete: false
+  }
 ];
 
 export default class App extends React.Component {
@@ -23,7 +27,7 @@ export default class App extends React.Component {
         return;
       }
       try {
-        const items = JSON.parse('123412(');
+        const items = JSON.parse(json);
         this.setState({ items });
       } catch (e) {
         Alert.alert('Quasitodo', 'Something went wrong when loading your items.');
