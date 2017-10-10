@@ -1,18 +1,40 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, AsyncStorage, Alert } from 'react-native';
 import Header from './Header';
 import Footer from './Footer';
 import TodoItem from './TodoItem';
 
-const items = [
-  { key: 1507129580608, text: 'Buy bread', complete: false },
-  { key: 1507129597587, text: 'Walk the dog', complete: false }
+const INITIAL_ITEMS = [
+  { key: 1507129580608, text: 'Welcome to Quasitodo!', complete: false },
+  { key: 1507129597587, text: 'Add new to-do items at the top.', complete: false }
 ];
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { items, text: '', filter: 'all' };
+    this.state = { items: [], text: '', filter: 'all' };
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('items').then(json => {
+      if (!json) {
+        // There are no items yet. We load up the initial items.
+        this.setState({ items: INITIAL_ITEMS });
+        return;
+      }
+      try {
+        const items = JSON.parse('123412(');
+        this.setState({ items });
+      } catch (e) {
+        Alert.alert('Quasitodo', 'Something went wrong when loading your items.');
+        this.setState({ items: INITIAL_ITEMS });
+      }
+    });
+  }
+
+  setItems(items) {
+    AsyncStorage.setItem('items', JSON.stringify(items));
+    this.setState({ items });
   }
 
   onChangeText(text) {
@@ -22,7 +44,8 @@ export default class App extends React.Component {
   onAddItem() {
     const newItem = { key: Date.now(), text: this.state.text, complete: false };
     const newItems = [...this.state.items, newItem];
-    this.setState({ items: newItems, text: '' });
+    this.setItems(newItems);
+    this.setState({ text: '' });
   }
 
   onToggleItem(key, complete) {
@@ -30,7 +53,7 @@ export default class App extends React.Component {
       if (item.key !== key) return item;
       return { ...item, complete };
     });
-    this.setState({ items: newItems });
+    this.setItems(newItems);
   }
 
   onFilter(filter) {
@@ -39,7 +62,7 @@ export default class App extends React.Component {
 
   onClearCompleted() {
     const newItems = this.state.items.filter(item => !item.complete);
-    this.setState({ items: newItems });
+    this.setItems(newItems);
   }
 
   render() {
@@ -61,11 +84,7 @@ export default class App extends React.Component {
           onChangeText={this.onChangeText.bind(this)}
           onAddItem={this.onAddItem.bind(this)}
         />
-        <FlatList
-          style={styles.itemList}
-          data={items}
-          renderItem={this.renderItem.bind(this)}
-        />
+        <FlatList style={styles.itemList} data={items} renderItem={this.renderItem.bind(this)} />
         <Footer
           filter={this.state.filter}
           onFilter={this.onFilter.bind(this)}
@@ -76,12 +95,7 @@ export default class App extends React.Component {
   }
 
   renderItem(item) {
-    return (
-      <TodoItem
-        item={item.item}
-        onToggleItem={this.onToggleItem.bind(this, item.item.key)}
-      />
-    );
+    return <TodoItem item={item.item} onToggleItem={this.onToggleItem.bind(this, item.item.key)} />;
   }
 }
 
