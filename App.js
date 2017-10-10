@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, AsyncStorage, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, AsyncStorage, Alert, ActivityIndicator } from 'react-native';
 import Header from './Header';
 import Footer from './Footer';
 import TodoItem from './TodoItem';
@@ -16,22 +16,22 @@ const INITIAL_ITEMS = [
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { items: [], text: '', filter: 'all' };
+    this.state = { items: [], text: '', filter: 'all', loading: true };
   }
 
   componentWillMount() {
     AsyncStorage.getItem('items').then(json => {
       if (!json) {
         // There are no items yet. We load up the initial items.
-        this.setState({ items: INITIAL_ITEMS });
+        this.setState({ items: INITIAL_ITEMS, loading: false });
         return;
       }
       try {
         const items = JSON.parse(json);
-        this.setState({ items });
+        this.setState({ items, loading: false });
       } catch (e) {
         Alert.alert('Quasitodo', 'Something went wrong when loading your items.');
-        this.setState({ items: INITIAL_ITEMS });
+        this.setState({ items: INITIAL_ITEMS, loading: false });
       }
     });
   }
@@ -94,6 +94,11 @@ export default class App extends React.Component {
           onFilter={this.onFilter.bind(this)}
           onClearCompleted={this.onClearCompleted.bind(this)}
         />
+        {this.state.loading && (
+          <View style={styles.loading}>
+            <ActivityIndicator animating size="large" />
+          </View>
+        )}
       </View>
     );
   }
@@ -112,5 +117,15 @@ const styles = StyleSheet.create({
   },
   itemList: {
     width: '100%'
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)'
   }
 });
